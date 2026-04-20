@@ -23,6 +23,6 @@ app.autodiscover_tasks()
 app.conf.beat_schedule = {
     "send_daily_report": {
         "task": "accounts.tasks.send_daily_report",
-        "schedule": crontab(minute=0, hour=9),
+        "schedule": crontab(minute=00, hour=19),
     },
 }
