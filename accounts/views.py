@@ -23,7 +23,6 @@ from .serializers import (
 
 PAGE_SIZE = 5
 
-
 class CustomPagination(PageNumberPagination):
     def get_paginated_response(self, data):
         return Response(
