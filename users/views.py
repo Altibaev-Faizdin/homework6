@@ -1,3 +1,4 @@
+from accounts.tasks import send_otp_email
 from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -76,6 +77,7 @@ class RegistrationAPIView(CreateAPIView):
             code = "".join(random.choices(string.digits, k=6))
 
             cache.set(f"{_CODE_PREFIX}{user.id}", code, timeout=_CODE_TTL)
+            send_otp_email.delay(email=email, otp_code=code)
 
         return Response(
             status=status.HTTP_201_CREATED,

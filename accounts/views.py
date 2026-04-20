@@ -6,6 +6,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from accounts.tasks import send_transaction_notification 
 
 from common.permissions import IsAnonymous, IsOwner, IsModerator, IsOwnerOrModerator
 from common.validators import validate_user_age_from_token
@@ -154,9 +155,17 @@ class TransactionViewSet(ModelViewSet):
             transaction_type=transaction_type,
         )
 
+
+        send_transaction_notification.delay(
+            email=request.user.email,
+            transaction_type=transaction_type,
+            amount=str(amount)
+        )
+
         return Response(
             data=TransactionSerializer(transaction).data, status=status.HTTP_201_CREATED
         )
+    
 
     def update(self, request, *args, **kwargs):
         transaction = self.get_object()
